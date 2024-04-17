@@ -1,0 +1,13 @@
+openapi: 3.0.1
+info:
+  title: contractManagementApi
+  description: API Definition of contractManagementApi
+  version: 1.0.0
+servers:
+- url: http://localhost:8290/uol/v1
+paths:
+  /:
+    post:
+      responses:
+        default:
+          description: Default response

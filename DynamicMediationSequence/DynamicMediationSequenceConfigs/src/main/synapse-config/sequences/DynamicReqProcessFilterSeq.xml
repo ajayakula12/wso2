@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sequence name="DynamicReqProcessFilterSeq" trace="disable" xmlns="http://ws.apache.org/ns/synapse">
+    <log level="custom">
+        <property expression="$ctx:retryStatusFlag" name="retrystatus flag is:======>"/>
+        <property expression="$ctx:logStatus" name="log status======================>"/>
+    </log>
+    <filter regex="1" source="$ctx:retryStatusFlag">
+        <then>
+            <log level="custom">
+                <property name="service" value="retry Services is called"/>
+                <property expression="$ctx:source_req_id" name="sourceRequestID============>"/>
+            </log>
+            <class description="com.uol.mediators.RetryFlowMediator" name="com.uol.mediators.RetryFlowMediator">
+                <property expression="$ctx:sourceRequestID" name="sourceRequestID"/>
+            </class>
+        </then>
+        <else>
+            <propertyGroup description="properties for logs">
+                <property expression="$ctx:NIC" name="NIC" scope="default" type="STRING"/>
+                <property expression="$ctx:MSISDN" name="MSISDN" scope="default" type="STRING"/>
+                <property expression="$ctx:csId" name="custid" scope="default" type="STRING"/>
+                <property expression="$ctx:NIC" name="channel" scope="default" type="STRING"/>
+                <property expression="$ctx:source_req_id" name="source_req_id" scope="default" type="STRING"/>
+                <property expression="$ctx:source_req_id" name="child_req_id" scope="default" type="STRING"/>
+                <property expression="fn:concat(get-property('REST_URL_PREFIX'),get-property('REST_FULL_REQUEST_PATH'))" name="api_name" scope="default" type="STRING"/>
+                <property name="processId" scope="default" type="STRING" value="0"/>
+                <property name="processName" scope="default" type="STRING" value="Initial Call"/>
+                <property expression="$ctx:request" name="request" scope="default" type="STRING"/>
+                <property name="status" scope="default" type="STRING" value="in-progress"/>
+                <property expression="$ctx:api_id" name="api_id" scope="default" type="STRING"/>
+                <property name="logStatus" scope="default" type="STRING" value="1.0"/>
+            </propertyGroup>
+            <sequence key="DBReport_RequestLog"/>
+            <class description="com.uol.mediators.DynamicRestSeqMediator" name="com.uol.mediators.DynamicRestSeqMediator">
+                <property expression="$ctx:api_id" name="apiId"/>
+                <property expression="$ctx:source_req_id" name="sourceRequestID"/>
+                <property expression="$ctx:query_type" name="queryType"/>
+            </class>
+        </else>
+    </filter>
+</sequence>

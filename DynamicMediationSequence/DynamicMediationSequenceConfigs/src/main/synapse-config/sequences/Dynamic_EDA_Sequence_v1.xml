@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sequence name="Dynamic_EDA_Sequence_v1" trace="disable" xmlns="http://ws.apache.org/ns/synapse">
+    <call-template onError="faultSeq" target="DynamicSeqCallLog_Temp">
+        <with-param name="seq_endpoint_name" value="EDA_NODE_EP"/>
+    </call-template>
+    <property name="messageType" scope="axis2" type="STRING" value="application/json"/>
+</sequence>

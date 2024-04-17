@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<api context="/uol/v1" name="contractManagementApi" xmlns="http://ws.apache.org/ns/synapse">
+    <resource methods="POST">
+        <inSequence>
+            <property description="source_req_id" expression="get-property('MessageID')" name="source_req_id" scope="default" type="STRING"/>
+            <property description="logStatus" name="logStatus" scope="default" type="STRING" value="1"/>
+            <property description="apiRegistryConfigs" expression="get-property('file','apiRegistryConfigs')" name="apiregistryConfigPath" scope="default" type="STRING"/>
+            <property description="api_id" expression="json-eval($.api_id)" name="api_id" scope="default" type="STRING"/>
+            <sequence key="dynamic_propvariable_setupSEQ"/>
+            <sequence key="DynamicReqProcessFilterSeq"/>
+            <payloadFactory description="buildResponsePayload" media-type="json">
+                <format>$1</format>
+                <args>
+                    <arg evaluator="xml" expression="$ctx:xmlResponse"/>
+                </args>
+            </payloadFactory>
+            <!--       <datamapper config="gov:datamapper/customerRead_tmf_dataMapper.dmc" inputSchema="gov:datamapper/customerRead_tmf_dataMapper_inputSchema.json" inputType="JSON" outputSchema="gov:datamapper/customerRead_tmf_dataMapper_outputSchema.json" outputType="JSON" xsltStyleSheet="gov:datamapper/customerRead_tmf_dataMapper_xsltStyleSheet.xml"/> -->
+            <sequence key="DBReport_ResponseLog"/>
+            <respond/>
+        </inSequence>
+        <outSequence/>
+        <faultSequence/>
+    </resource>
+</api>

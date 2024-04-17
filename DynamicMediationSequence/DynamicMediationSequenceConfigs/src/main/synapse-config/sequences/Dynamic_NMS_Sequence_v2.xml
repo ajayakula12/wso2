@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sequence name="Dynamic_NMS_Sequence_v2" onError="FaultSequence" trace="disable" xmlns="http://ws.apache.org/ns/synapse">
+    <property expression="$ctx:child_req_id" name="child_req_id" scope="default" type="STRING"/>
+    <switch description="routes based on ApiName form NB systems" source="$ctx:sub_endpoint">
+        <case regex="view-numbers">
+            <property expression="fn:concat(get-property('file','NMS_WEB_SERVICES_URL'),$ctx:sub_endpoint,'?channel=',$ctx:channel,'&amp;category=',$ctx:category)" name="uri.var.Api" scope="default" type="STRING"/>
+            <call-template onError="faultSeq" target="DynamicSeqCallLog_Temp">
+                <with-param name="seq_endpoint_name" value="NMS_ord_EP"/>
+            </call-template>
+        </case>
+        <case regex="activate-number">
+            <property expression="fn:concat(get-property('file','NMS_WEB_SERVICES_URL'),$ctx:sub_endpoint)" name="uri.var.Api" scope="default" type="STRING"/>
+            <payloadFactory media-type="json">
+                <format>{&#xd;
+    "number": "9609886702",&#xd;
+    "ratePlanCode": "rpCode",&#xd;
+    "channelName": "moolee"&#xd;
+}</format>
+                <args/>
+            </payloadFactory>
+            <call-template onError="faultSeq" target="DynamicSeqCallLog_Temp">
+                <with-param name="seq_endpoint_name" value="NMS_ord_POST_EP"/>
+            </call-template>
+        </case>
+        <case regex="deactivate-number">
+            <property expression="fn:concat(get-property('file','NMS_WEB_SERVICES_URL'),$ctx:sub_endpoint)" name="uri.var.Api" scope="default" type="STRING"/>
+            <payloadFactory media-type="json">
+                <format>{&#xd;
+    "number": "9609886702",&#xd;
+    "ratePlanCode": "rpCode",&#xd;
+    "channelName": "moolee"&#xd;
+}</format>
+                <args/>
+            </payloadFactory>
+            <header name="Accept" scope="transport" value="application/json"/>
+            <header name="Content-Type" scope="transport" value="application/json"/>
+            <call-template onError="faultSeq" target="DynamicSeqCallLog_Temp">
+                <with-param name="seq_endpoint_name" value="NMS_ord_POST_EP"/>
+            </call-template>
+        </case>
+        <case regex="number-release">
+            <property expression="fn:concat(get-property('file','NMS_WEB_SERVICES_URL'),$ctx:msisdn,'/',$ctx:sub_endpoint,'?channel=',$ctx:channel)" name="uri.var.Api" scope="default" type="STRING"/>
+            <call-template onError="faultSeq" target="DynamicSeqCallLog_Temp">
+                <with-param name="seq_endpoint_name" value="NMS_ord_POST_EP"/>
+            </call-template>
+        </case>
+        <case regex="number-lock">
+            <property expression="fn:concat(get-property('file','NMS_WEB_SERVICES_URL'),$ctx:msisdn,'/',$ctx:sub_endpoint,'?status=',$ctx:status,'&amp;channel=',$ctx:channel)" name="uri.var.Api" scope="default" type="STRING"/>
+            <call-template onError="faultSeq" target="DynamicSeqCallLog_Temp">
+                <with-param name="seq_endpoint_name" value="NMS_ord_POST_EP"/>
+            </call-template>
+        </case>
+        <case regex="pattern-list">
+            <property expression="fn:concat(get-property('file','NMS_WEB_SERVICES_URL'),$ctx:sub_endpoint,'?pattern=',$ctx:msisdn,'&amp;channel=',$ctx:channel)" name="uri.var.Api" scope="default" type="STRING"/>
+            <call-template onError="faultSeq" target="DynamicSeqCallLog_Temp">
+                <with-param name="seq_endpoint_name" value="NMS_ord_POST_EP"/>
+            </call-template>
+        </case>
+        <default>
+            <payloadFactory media-type="json" template-type="freemarker">
+                <format><![CDATA[{
+"defaultCase":"no API: ${payload.ApiName} is found in NMS system"
+
+}]]></format>
+                <args/>
+            </payloadFactory>
+        </default>
+    </switch>
+</sequence>

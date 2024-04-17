@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sequence name="DBReport_RequestLog" trace="disable" xmlns="http://ws.apache.org/ns/synapse">
+    <log level="custom">
+        <property name="service" value="happy flow $ctx:logStatus is called"/>
+        <property expression="$ctx:logStatus" name="$ctx:logStatus==========>"/>
+    </log>
+    <filter regex="1.0" source="$ctx:logStatus">
+        <then>
+            <log>
+                <property expression="$ctx:logStatus" name="logstatus value===>"/>
+            </log>
+            <dbreport description="Request Log(INSERT)">
+                <connection>
+                    <pool>
+                        <dsName>UOL_DB</dsName>
+                    </pool>
+                </connection>
+                <statement>
+                    <sql><![CDATA[INSERT INTO uol_api_registry.api_log_handler ( NIC, MSISDN, custId, channel, source_req_id, child_req_id, api_name, processId, processName, request, status, api_id,orderId) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+]]></sql>
+                    <parameter expression="$ctx:NIC" type="VARCHAR"/>
+                    <parameter expression="$ctx:MSISDN" type="VARCHAR"/>
+                    <parameter expression="$ctx:custId" type="VARCHAR"/>
+                    <parameter expression="$ctx:channel" type="VARCHAR"/>
+                    <parameter expression="$ctx:source_req_id" type="VARCHAR"/>
+                    <parameter expression="$ctx:child_req_id" type="VARCHAR"/>
+                    <parameter expression="$ctx:api_name" type="VARCHAR"/>
+                    <parameter expression="$ctx:processId" type="VARCHAR"/>
+                    <parameter expression="$ctx:processName" type="VARCHAR"/>
+                    <parameter expression="$ctx:request" type="VARCHAR"/>
+                    <parameter expression="$ctx:status" type="VARCHAR"/>
+                    <parameter expression="$ctx:api_id" type="VARCHAR"/>
+                    <parameter expression="$ctx:orderId" type="VARCHAR"/>
+                </statement>
+            </dbreport>
+        </then>
+        <else/>
+    </filter>
+</sequence>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sequence name="Dynamic_NMS_Sequence_v1" trace="disable" xmlns="http://ws.apache.org/ns/synapse">
+    <property expression="$ctx:child_req_id" name="child_req_id" scope="default" type="STRING"/>
+    <switch description="routes based on ApiName form NB systems" source="$ctx:ApiName">
+        <case regex="view-numbers">
+            <property description="Endpoint Val" name="seq_endpoint_name" scope="axis2" type="STRING" value="NMS_View_Numbers_EP"/>
+            <call-template onError="faultSeq" target="DynamicSeqCallLog_Temp">
+                <with-param name="seq_endpoint_name" value="NMS_View_Numbers_EP"/>
+            </call-template>
+        </case>
+        <case regex="activate-number">
+            <property description="Endpoint Val" name="seq_endpoint_name" scope="axis2" type="STRING" value="NMS_Activate_Number_EP"/>
+            <call-template target="DynamicSeqCallLog_Temp"/>
+        </case>
+        <case regex="deactivate-number">
+            <property description="Endpoint Val" name="seq_endpoint_name" scope="axis2" type="STRING" value="NMS_Deactivate_Number_EP"/>
+            <call-template target="DynamicSeqCallLog_Temp"/>
+        </case>
+        <case regex="number-release">
+            <propertyGroup>
+                <property expression="$func:channelName" name="uri.var.channel" scope="default" type="STRING"/>
+                <property expression="$func:msisdn" name="uri.var.msisdn" scope="default" type="STRING"/>
+            </propertyGroup>
+            <property description="Endpoint Val" name="seq_endpoint_name" scope="axis2" type="STRING" value="NMS_Number_Release_EP"/>
+            <call-template target="DynamicSeqCallLog_Temp"/>
+        </case>
+        <case regex="number-lock">
+            <propertyGroup>
+                <property expression="$func:channelName" name="uri.var.channel" scope="default" type="STRING"/>
+                <property expression="$func:msisdn" name="uri.var.msisdn" scope="default" type="STRING"/>
+                <property expression="$func:status" name="uri.var.status" scope="default" type="STRING"/>
+            </propertyGroup>
+            <property description="Endpoint Val" name="seq_endpoint_name" scope="axis2" type="STRING" value="NMS_Number_Lock_EP"/>
+            <call-template target="DynamicSeqCallLog_Temp"/>
+        </case>
+        <case regex="pattern-list">
+            <propertyGroup>
+                <property expression="$func:channelName" name="uri.var.channel" scope="default" type="STRING"/>
+                <property expression="$func:pattern" name="uri.var.pattern" scope="default" type="STRING"/>
+            </propertyGroup>
+            <property description="Endpoint Val" name="seq_endpoint_name" scope="axis2" type="STRING" value="NMS_Pattern_List_EP"/>
+            <call-template target="DynamicSeqCallLog_Temp"/>
+        </case>
+        <default>
+            <payloadFactory media-type="json" template-type="freemarker">
+                <format><![CDATA[{
+"defaultCase":"no API: ${payload.ApiName} is found in NMS system"
+
+}]]></format>
+                <args/>
+            </payloadFactory>
+        </default>
+    </switch>
+    <payloadFactory media-type="json">
+        <format>$1</format>
+        <args>
+            <arg evaluator="json" expression="$"/>
+        </args>
+    </payloadFactory>
+</sequence>

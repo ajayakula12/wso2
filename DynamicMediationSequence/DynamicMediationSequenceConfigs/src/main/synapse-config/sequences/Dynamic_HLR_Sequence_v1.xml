@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sequence name="Dynamic_HLR_Sequence_v1" trace="disable" xmlns="http://ws.apache.org/ns/synapse">
+    <property description="Endpoint Val" name="seq_endpoint_name" scope="axis2" type="STRING" value="HLR_NODE_EP"/>
+    <call-template target="DynamicSeqCallLog_Temp"/>
+    <property name="messageType" scope="axis2" type="STRING" value="application/json"/>
+</sequence>

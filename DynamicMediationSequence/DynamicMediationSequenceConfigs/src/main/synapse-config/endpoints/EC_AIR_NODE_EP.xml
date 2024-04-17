@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint name="EC_AIR_NODE_EP" xmlns="http://ws.apache.org/ns/synapse">
+    <loadbalance algorithm="org.apache.synapse.endpoints.algorithms.RoundRobin" buildMessage="true">
+        <endpoint>
+            <http method="POST" uri-template="$FILE:EC_AIR_WEB_SERVICES_URL">
+                <suspendOnFailure>
+                    <initialDuration>-1</initialDuration>
+                    <progressionFactor>-1</progressionFactor>
+                    <maximumDuration>0</maximumDuration>
+                </suspendOnFailure>
+                <markForSuspension>
+                    <retriesBeforeSuspension>0</retriesBeforeSuspension>
+                </markForSuspension>
+            </http>
+        </endpoint>
+        <endpoint>
+            <http method="POST" uri-template="$FILE:EC_AIR_WEB_SERVICES_URL2">
+                <suspendOnFailure>
+                    <initialDuration>-1</initialDuration>
+                    <progressionFactor>-1</progressionFactor>
+                    <maximumDuration>0</maximumDuration>
+                </suspendOnFailure>
+                <markForSuspension>
+                    <retriesBeforeSuspension>0</retriesBeforeSuspension>
+                </markForSuspension>
+            </http>
+        </endpoint>
+    </loadbalance>
+    <property name="Authorization" scope="transport" value="get-property('file','EC_Auth_key')"/>
+    <description/>
+</endpoint>

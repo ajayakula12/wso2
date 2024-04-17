@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sequence name="testSeq" trace="disable" xmlns="http://ws.apache.org/ns/synapse">
+    <payloadFactory media-type="json">
+        <format>{&#xd;
+    "read-nms-numbers": {&#xd;
+        "data": [&#xd;
+            {&#xd;
+                "number": 9609883458,&#xd;
+                "status": "FREE"&#xd;
+            },&#xd;
+            {&#xd;
+                "number": 9609883290,&#xd;
+                "status": "FREE"&#xd;
+            },&#xd;
+            {&#xd;
+                "number": 9609882936,&#xd;
+                "status": "FREE"&#xd;
+            },&#xd;
+            {&#xd;
+                "number": 9609882654,&#xd;
+                "status": "FREE"&#xd;
+            },&#xd;
+            {&#xd;
+                "number": 9609882395,&#xd;
+                "status": "FREE"&#xd;
+            },&#xd;
+            {&#xd;
+                "number": 9609882203,&#xd;
+                "status": "FREE"&#xd;
+            },&#xd;
+            {&#xd;
+                "number": 9609881875,&#xd;
+                "status": "FREE"&#xd;
+            },&#xd;
+            {&#xd;
+                "number": 9609881654,&#xd;
+                "status": "FREE"&#xd;
+            },&#xd;
+            {&#xd;
+                "number": 9609881593,&#xd;
+                "status": "FREE"&#xd;
+            },&#xd;
+            {&#xd;
+                "number": 9609881539,&#xd;
+                "status": "FREE"&#xd;
+            }&#xd;
+        ],&#xd;
+        "message": "Successfully received the numbers",&#xd;
+        "statusCode": 200&#xd;
+    },&#xd;
+    "number-pattern-list": {&#xd;
+        "data": [&#xd;
+            {&#xd;
+                "category": "GOLD"&#xd;
+            },&#xd;
+            {&#xd;
+                "category": "REGULAR"&#xd;
+            },&#xd;
+            {&#xd;
+                "category": "SILVER"&#xd;
+            },&#xd;
+            {&#xd;
+                "category": "PLATINUM"&#xd;
+            }&#xd;
+        ],&#xd;
+        "message": "Successfully  get the numbers by pattern",&#xd;
+        "statusCode": 200&#xd;
+    }&#xd;
+}</format>
+        <args/>
+    </payloadFactory>
+</sequence>

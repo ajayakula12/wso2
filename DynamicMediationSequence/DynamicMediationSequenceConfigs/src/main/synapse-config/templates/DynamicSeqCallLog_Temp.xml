@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template name="DynamicSeqCallLog_Temp" xmlns="http://ws.apache.org/ns/synapse">
+    <parameter defaultValue="" isMandatory="false" name="seq_endpoint_name"/>
+    <sequence>
+        <propertyGroup description="properties for logs">
+            <property expression="$ctx:NIC" name="NIC" scope="default" type="STRING"/>
+            <property expression="$ctx:MSISDN" name="MSISDN" scope="default" type="STRING"/>
+            <property expression="$ctx:csId" name="custid" scope="default" type="STRING"/>
+            <property expression="$ctx:NIC" name="channel" scope="default" type="STRING"/>
+            <property expression="$ctx:source_req_id" name="source_req_id" scope="default" type="STRING"/>
+            <property expression="$ctx:child_req_id" name="child_req_id" scope="default" type="STRING"/>
+            <property expression="$ctx:sub_endpoint" name="api_name" scope="default" type="STRING"/>
+            <property expression="$ctx:process_id" name="processId" scope="default" type="STRING"/>
+            <property expression="$ctx:process_name" name="processName" scope="default" type="STRING"/>
+            <property expression="$body/*" name="request" scope="default" type="STRING"/>
+            <property name="status" scope="default" type="STRING" value="in-progress"/>
+            <property expression="$ctx:api_id" name="api_id" scope="default" type="STRING"/>
+            <property expression="$ctx:logStatus" name="logStatus" scope="default" type="STRING"/>
+            <property expression="$ctx:orderId" name="orderId" scope="default" type="STRING"/>
+        </propertyGroup>
+        <log level="custom">
+            <property expression="$ctx:logStatus" name="log status of Seq==>"/>
+        </log>
+        <sequence key="DBReport_RequestLog"/>
+        <call>
+            <endpoint key-expression="$func:seq_endpoint_name"/>
+        </call>
+        <propertyGroup description="properties for logs">
+            <property name="logStatus" scope="default" type="STRING" value="1"/>
+            <property expression="$body/*" name="process_response" scope="default" type="STRING"/>
+            <property expression="$axis2:HTTP_SC" name="statusCode" scope="default" type="STRING"/>
+            <property expression="$ctx:source_req_id" name="source_req_id" scope="default" type="STRING"/>
+            <property expression="$ctx:child_req_id" name="child_req_id" scope="default" type="STRING"/>
+            <property expression="$ctx:orderId" name="orderId" scope="default" type="STRING"/>
+        </propertyGroup>
+        <sequence key="DBReport_ResponseLog"/>
+    </sequence>
+</template>

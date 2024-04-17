@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sequence name="Read_Customer_BU_Logic_Seq" trace="disable" xmlns="http://ws.apache.org/ns/synapse">
+    <switch source="$ctx:process_name">
+        <case regex="CustomerRead">
+            <log level="custom">
+                <property name="customerRead===>" value="Executing BU Logic here"/>
+                <property expression="json-eval($)" name="Data ##############"/>
+            </log>
+        </case>
+        <case regex="AddressRead">
+            <log level="custom">
+                <property name="Address Read==>" value="Executing BU Logic here"/>
+                <property expression="json-eval($)" name="Data ##############"/>
+            </log>
+        </case>
+        <case regex="ContractRead">
+            <log level="custom">
+                <property name="Contract Read===>" value="Executing BU Logic here"/>
+                <property expression="json-eval($)" name="Data ##############"/>
+            </log>
+        </case>
+        <case regex="customer_create">
+            <log level="custom">
+                <property name="customer create ==>" value="Executing BU Logic here"/>
+                <property expression="json-eval($)" name="Data ##############"/>
+            </log>
+        </case>
+        <default>
+            <log level="custom">
+                <property name="Default process name ===>" value="Executing Defaultb BU Logic here"/>
+                <property expression="json-eval($)" name="Data ##############"/>
+            </log>
+        </default>
+    </switch>
+</sequence>

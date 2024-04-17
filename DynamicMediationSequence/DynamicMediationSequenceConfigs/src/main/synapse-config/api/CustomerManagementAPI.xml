@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<api context="/uol/v1" name="CustomerManagementAPI" xmlns="http://ws.apache.org/ns/synapse">
+    <resource faultSequence="FaultSequence" methods="POST" url-mapping="/customer">
+        <inSequence>
+            <log level="full"/>
+            <!--     <datamapper config="gov:datamapper/customerCreate_tmf_dataMapper.dmc" description="customerCreate_SB_InputMapping" inputSchema="gov:datamapper/customerCreate_tmf_dataMapper_inputSchema.json" inputType="JSON" outputSchema="gov:datamapper/customerCreate_tmf_dataMapper_outputSchema.json" outputType="JSON" xsltStyleSheet="gov:datamapper/customerCreate_tmf_dataMapper_xsltStyleSheet.xml"/>-->
+            <propertyGroup>
+                <property expression="json-eval($)" name="request" scope="default" type="STRING"/>
+            </propertyGroup>
+            <!-- Handle any other sequences or mediation after the iteration if needed -->
+            <!-- Aggregate all API responses -->
+            <!-- Continue with further processing using the aggregated response -->
+            <property description="source_req_id" expression="get-property('MessageID')" name="source_req_id" scope="default" type="STRING"/>
+            <property description="logStatus" name="logStatus" scope="default" type="STRING" value="1"/>
+            <property description="apiRegistryConfigs" expression="get-property('file','apiRegistryConfigs')" name="apiregistryConfigPath" scope="default" type="STRING"/>
+            <property description="api_id" expression="json-eval($.api_id)" name="api_id" scope="default" type="STRING"/>
+            <sequence key="dynamic_propvariable_setupSEQ"/>
+            <sequence key="DynamicReqProcessFilterSeq"/>
+            <payloadFactory description="buildResponsePayload" media-type="json">
+                <format>$1</format>
+                <args>
+                    <arg evaluator="xml" expression="$body"/>
+                </args>
+            </payloadFactory>
+            <!--       <datamapper config="gov:datamapper/customerRead_tmf_dataMapper.dmc" inputSchema="gov:datamapper/customerRead_tmf_dataMapper_inputSchema.json" inputType="JSON" outputSchema="gov:datamapper/customerRead_tmf_dataMapper_outputSchema.json" outputType="JSON" xsltStyleSheet="gov:datamapper/customerRead_tmf_dataMapper_xsltStyleSheet.xml"/> -->
+            <sequence key="DBReport_ResponseLog"/>
+            <respond/>
+        </inSequence>
+        <outSequence/>
+    </resource>
+    <resource faultSequence="FaultSequence" methods="GET" url-mapping="/customer">
+        <inSequence>
+            <property description="customer id" expression="get-property('query.param.csId')" name="csId" scope="default" type="STRING"/>
+            <property description="tmf_fields" expression="get-property('query.param.fields')" name="tmf_fields" scope="default" type="STRING"/>
+            <property description="source_req_id" expression="substring-after(get-property('MessageID'), 'urn:uuid:')" name="source_req_id" scope="default" type="STRING"/>
+            <property description="apiRegistryConfigs" expression="get-property('file','apiRegistryConfigs')" name="apiregistryConfigPath" scope="default" type="STRING"/>
+            <property description="api_id" name="api_id" scope="default" type="STRING" value="read_customer"/>
+            <log level="custom">
+                <property expression="$ctx:csId" name="csid --data==>"/>
+                <property expression="$ctx:tmf_fields" name="tmf_fields --data==>"/>
+            </log>
+            <sequence key="DynamicReqProcessFilterSeq"/>
+            <payloadFactory description="buildResponsePayload" media-type="json">
+                <format>$1</format>
+                <args>
+                    <arg evaluator="xml" expression="$ctx:xmlResponse"/>
+                </args>
+            </payloadFactory>
+            <propertyGroup description="properties for logs">
+                <property name="logStatus" scope="default" type="STRING" value="1"/>
+                <property expression="$ctx:xmlResponse" name="process_response" scope="default" type="STRING"/>
+                <property expression="$body/*" name="tmf_response" scope="default" type="STRING"/>
+                <property expression="$ctx:statusCode" name="statusCode" scope="default" type="STRING"/>
+                <property expression="$ctx:source_req_id" name="source_req_id" scope="default" type="STRING"/>
+                <property expression="$ctx:source_req_id" name="child_req_id" scope="default" type="STRING"/>
+            </propertyGroup>
+            <sequence key="DBReport_ResponseLog"/>
+            <respond/>
+        </inSequence>
+        <outSequence/>
+    </resource>
+    <!--     <handlers>
+        <handler class="com.uol.handler.UOLAuthenticationHandler"/>
+    </handlers> -->
+</api>

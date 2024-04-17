@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint name="NMS_ord_EP" xmlns="http://ws.apache.org/ns/synapse">
+    <http method="get" statistics="enable" trace="enable" uri-template="{uri.var.Api}">
+        <suspendOnFailure>
+            <initialDuration>-1</initialDuration>
+            <progressionFactor>1.0</progressionFactor>
+        </suspendOnFailure>
+        <markForSuspension>
+            <retriesBeforeSuspension>0</retriesBeforeSuspension>
+        </markForSuspension>
+    </http>
+    <property expression="get-property('file','NMS_PASSWORD')" name="password" scope="transport"/>
+    <property expression="get-property('file','NMS_USERNAME')" name="username" scope="transport"/>
+</endpoint>

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sequence name="Dynamic_OC_Sequence_v1" trace="disable" xmlns="http://ws.apache.org/ns/synapse">
+    <property description="Endpoint Val" name="seq_endpoint_name" scope="axis2" type="STRING" value="OPENCODE_Node_EP"/>
+    <call-template target="DynamicSeqCallLog_Temp"/>
+</sequence>

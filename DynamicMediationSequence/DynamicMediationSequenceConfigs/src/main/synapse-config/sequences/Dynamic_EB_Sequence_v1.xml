@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sequence name="Dynamic_EB_Sequence_v1" onError="FaultSequence" trace="disable" xmlns="http://ws.apache.org/ns/synapse">
+    <property name="BUID_VAL" scope="default" type="STRING" value="2"/>
+    <property name="csId" scope="default" type="STRING" value="518531"/>
+    <property name="coId" scope="default" type="STRING" value="83103"/>
+    <property expression="get-property($ctx:request_template_id)" name="req_template" scope="default" type="OM"/>
+    <log level="custom">
+        <property expression="$ctx:req_template" name="req_template ino0==>"/>
+    </log>
+    <script language="js"><![CDATA[var log = mc.getServiceLog();   
+	var XMLRequest = mc.getProperty("req_template");
+	//log.info("req_template in script "+ XMLRequest);
+	var srcRequest = XMLRequest.toString();
+	
+	// Extract placeholder keys from the  srcRequest
+	  var dynamicKeys = srcRequest.match(/{(.*?)}/g).map(function(key) 
+	  {
+	  return key.replace(/[{}]/g, '');
+	  });
+	 //     log.info("dynamic replaceble keys are-->"+dynamicKeys);       
+	// Replace placeholders with dynamically fetched values
+	  dynamicKeys.forEach(function(key) 
+	  {
+	   if (mc.getProperty(key)) {
+   //    log.info("key  are-->"+key+"::"+mc.getProperty(key));      
+	   srcRequest = srcRequest.replace("{" + key + "}", mc.getProperty(key));
+	  }
+	  });
+        log.info("templte info-->"+srcRequest);
+	mc.setPayloadXML(new XML(srcRequest));]]></script>
+    <property description="reqData" expression="$body/*" name="reqData" scope="default" type="STRING"/>
+    <payloadFactory media-type="xml">
+        <format>
+            <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+                <soapenv:Header>
+                    <wsse:Security soapenv:mustUnderstand="1" xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd">
+                        <wsse:UsernameToken wsu:Id="UsernameToken-4041E3749487CEEDA416735096455611">
+                            <wsse:Username>$1</wsse:Username>
+                            <wsse:Password Type="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText">$2</wsse:Password>
+                            <!--<wsse:Nonce EncodingType="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-soap-message-security-1.0#Base64Binary">qGELBcPOuTVG3N9euZozew==</wsse:Nonce> -->
+                            <wsu:Created>2023-01-12T07:47:25.554Z</wsu:Created>
+                        </wsse:UsernameToken>
+                    </wsse:Security>
+                </soapenv:Header>
+                <soapenv:Body>
+$3
+</soapenv:Body>
+            </soapenv:Envelope>
+        </format>
+        <args>
+            <arg evaluator="xml" expression="get-property('file','EB_USERNAME')"/>
+            <arg evaluator="xml" expression="get-property('file','EB_PASSWORD')"/>
+            <arg evaluator="xml" expression="$ctx:reqData"/>
+        </args>
+    </payloadFactory>
+    <property name="seq_endpoint_name" scope="axis2" type="STRING" value="EB_NODE_EP"/>
+    <call-template onError="faultSeq" target="DynamicSeqCallLog_Temp">
+        <with-param name="seq_endpoint_name" value="EB_Node_EP"/>
+    </call-template>
+    <property name="messageType" scope="axis2" type="STRING" value="application/json"/>
+</sequence>

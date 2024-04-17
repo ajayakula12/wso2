@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint name="NMS_Activate_Number_EP" xmlns="http://ws.apache.org/ns/synapse">
+    <http method="post" uri-template="get-property('file','NMS_WEB_SERVICES_URL')/activate-number">
+        <suspendOnFailure>
+            <initialDuration>-1</initialDuration>
+            <progressionFactor>1.0</progressionFactor>
+        </suspendOnFailure>
+        <markForSuspension>
+            <retriesBeforeSuspension>0</retriesBeforeSuspension>
+        </markForSuspension>
+    </http>
+    <property expression="get-property('file','NMS_PASSWORD')" name="password" scope="transport"/>
+    <property expression="get-property('file','NMS_USERNAME')" name="username" scope="transport"/>
+</endpoint>

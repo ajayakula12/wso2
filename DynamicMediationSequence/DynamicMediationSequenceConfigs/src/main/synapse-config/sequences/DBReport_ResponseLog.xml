@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sequence name="DBReport_ResponseLog" trace="disable" xmlns="http://ws.apache.org/ns/synapse">
+    <!-- <class description="UOLResponseLog" name="com.uol.mediators.UOLResponseLogMediator">
+                <property expression="$ctx:source_req_id" name="source_req_id"/>
+                <property expression="$ctx:source_req_id" name="child_req_id"/>
+                <property expression="json-eval($)" name="response"/>
+                <property expression="$ctx:statusCode" name="status"/>
+                <property name="logStatus" value="1"/>
+            </class>  -->
+    <filter xpath="$ctx:logStatus>0">
+        <then>
+            <dbreport description="Response Log(UPDATE)">
+                <connection>
+                    <pool>
+                        <dsName>UOL_DB</dsName>
+                    </pool>
+                </connection>
+                <statement>
+                    <sql><![CDATA[UPDATE uol_api_registry.api_log_handler SET response = ?,tmf_response=?,orderId=?, status = ? WHERE source_req_id = ? AND child_req_id = ?;]]></sql>
+                    <parameter expression="$ctx:process_response" type="VARCHAR"/>
+                    <parameter expression="$ctx:tmf_response" type="VARCHAR"/>
+                    <parameter expression="$ctx:orderId" type="VARCHAR"/>
+                    <parameter expression="$ctx:statusCode" type="VARCHAR"/>
+                    <parameter expression="$ctx:source_req_id" type="VARCHAR"/>
+                    <parameter expression="$ctx:child_req_id" type="VARCHAR"/>
+                </statement>
+            </dbreport>
+        </then>
+        <else/>
+    </filter>
+</sequence>
